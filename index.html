@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>南京科瑞斯软件科技 KERRUS — 工业自动化与汽车电子测试解决方案</title>
+<meta name="description" content="南京科瑞斯软件科技有限公司（KERRUS），专注工业自动化技术及汽车电子领域装配与测试解决方案：电气自动化、机械设计制造、上位机软件、工业机器人系统集成、离线仿真与汽车电子测试服务。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2335a849'/%3E%3Cstop offset='.55' stop-color='%23c9ce2e'/%3E%3Cstop offset='1' stop-color='%23f59a23'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23g)' stroke-width='4' stroke-linecap='round'%3E%3Cellipse cx='24' cy='11' rx='17' ry='6.5'/%3E%3Cellipse cx='24' cy='17' rx='17' ry='6.5'/%3E%3Cellipse cx='24' cy='23' rx='17' ry='6.5'/%3E%3Cellipse cx='24' cy='29' rx='17' ry='6.5'/%3E%3Cellipse cx='24' cy='35' rx='17' ry='6.5'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* ============================================================
+   KERRUS 科瑞斯 — 设计 Token
+   世界：汽车电子测试台 / PLC 机柜 / 工业机器人 / CAN 信号
+   签名：仪器信号采样刻度（tick-rule）+ 等宽技术读数
+============================================================ */
+:root{
+  --ink:#131d22;
+  --ink-2:#1b2830;
+  --ink-3:#24343d;
+  --teal:#0e6b62;
+  --teal-deep:#0a4f49;
+  --teal-soft:#e3efec;
+  --blue:#1683c4;
+  --amber:#f59a23;
+  --amber-deep:#d97f0c;
+  --paper:#f3f5f4;
+  --paper-2:#eaf0ee;
+  --card:#ffffff;
+  --line:#d9e0de;
+  --line-dark:#33474f;
+  --text:#16232a;
+  --text-2:#51646b;
+  --text-3:#82949a;
+  --on-dark:#eef4f3;
+  --on-dark-2:#a9bdc0;
+  --radius:4px;
+  --shadow:0 14px 40px -18px rgba(19,29,34,.28);
+  --font-sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",-apple-system,"Helvetica Neue",sans-serif;
+  --font-mono:"JetBrains Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  --nav-h:68px;
+  --maxw:1200px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-sans);
+  color:var(--text);
+  background:var(--paper);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+::selection{background:var(--amber);color:#1a1206}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+@media(max-width:640px){.wrap{padding:0 20px}}
+
+/* ---------- 签名元素：信号采样刻度 ---------- */
+.tick-rule{
+  height:14px;
+  background-image:
+    linear-gradient(to right,currentColor 0 1px,transparent 1px),
+    linear-gradient(to right,currentColor 0 1px,transparent 1px);
+  background-size:14px 100%,70px 100%;
+  background-position:bottom,bottom;
+  background-repeat:repeat-x;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);
+          mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);
+}
+.tick-rule span{
+  display:inline-block;
+  font-family:var(--font-mono);
+  font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;
+  opacity:.75;
+}
+/* 蓝图网格底纹 */
+.blueprint{
+  background-image:
+    linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:34px 34px;
+}
+
+/* ---------- 章节眉标 / 标题 ---------- */
+.sec{padding:96px 0;scroll-margin-top:var(--nav-h)}
+@media(max-width:760px){.sec{padding:68px 0}}
+.eyebrow{
+  display:flex;align-items:center;gap:14px;
+  font-family:var(--font-mono);
+  font-size:12px;letter-spacing:.22em;
+  color:var(--teal);
+  text-transform:uppercase;
+  margin-bottom:16px;
+}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--amber)}
+.sec.on-dark .eyebrow{color:#5fc2b6}
+.sec-title{font-size:clamp(26px,3.4vw,38px);font-weight:900;letter-spacing:.01em;line-height:1.25}
+.sec-lead{margin-top:16px;max-width:720px;color:var(--text-2);font-size:16px}
+.sec.on-dark .sec-title{color:var(--on-dark)}
+.sec.on-dark .sec-lead{color:var(--on-dark-2)}
+.sec-head{margin-bottom:52px}
+
+/* ---------- 按钮 ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:13px 26px;
+  font-size:15px;font-weight:700;letter-spacing:.04em;
+  border-radius:var(--radius);
+  transition:transform .18s ease,background .18s ease,box-shadow .18s ease,border-color .18s ease;
+  min-height:44px;
+}
+.btn svg{width:16px;height:16px}
+.btn-primary{background:var(--amber);color:#231503;box-shadow:0 10px 26px -12px rgba(245,154,35,.75)}
+.btn-primary:hover{background:var(--amber-deep);transform:translateY(-2px)}
+.btn-ghost{border:1.5px solid rgba(255,255,255,.55);color:#fff}
+.btn-ghost:hover{border-color:var(--amber);color:var(--amber)}
+.btn-line{border:1.5px solid var(--teal);color:var(--teal)}
+.btn-line:hover{background:var(--teal);color:#fff;transform:translateY(-2px)}
+
+/* ============================================================
+   导航
+============================================================ */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:100;height:var(--nav-h);
+  display:flex;align-items:center;
+  transition:background .25s ease,box-shadow .25s ease,border-color .25s ease;
+  border-bottom:1px solid transparent;
+}
+.nav.scrolled{
+  background:rgba(19,29,34,.92);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom-color:var(--line-dark);
+}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;width:100%}
+.brand{display:flex;align-items:center;gap:11px;color:#fff}
+.brand svg{width:38px;height:38px;flex:none}
+.brand b{display:block;font-size:17px;font-weight:900;letter-spacing:.16em;line-height:1.1}
+.brand small{display:block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.2em;color:var(--on-dark-2);margin-top:2px}
+.nav-links{display:flex;align-items:center;gap:30px}
+.nav-links a{
+  font-size:14.5px;font-weight:500;color:#cfdadd;position:relative;padding:6px 0;
+  transition:color .18s;
+}
+.nav-links a::after{
+  content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--amber);transition:width .22s;
+}
+.nav-links a:hover,.nav-links a.active{color:#fff}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%}
+.nav-cta{padding:9px 20px;min-height:0;font-size:14px}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.lang-btn{
+  color:#cfdadd;border:1.5px solid rgba(255,255,255,.42);border-radius:3px;
+  font-family:var(--font-mono);font-size:12.5px;letter-spacing:.1em;font-weight:700;
+  padding:7px 13px;min-height:34px;transition:.18s;
+}
+.lang-btn:hover{border-color:var(--amber);color:var(--amber)}
+.nav-toggle{display:none;flex-direction:column;gap:5px;padding:8px}
+.nav-toggle i{width:24px;height:2px;background:#fff;transition:.25s}
+.nav-toggle.open i:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-toggle.open i:nth-child(2){opacity:0}
+.nav-toggle.open i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+@media(max-width:960px){
+  .nav-links{
+    position:fixed;top:var(--nav-h);left:0;right:0;
+    flex-direction:column;align-items:stretch;gap:0;
+    background:rgba(19,29,34,.97);
+    border-bottom:1px solid var(--line-dark);
+    padding:10px 24px 22px;
+    transform:translateY(-130%);transition:transform .3s ease;
+  }
+  .nav-links.open{transform:translateY(0)}
+  .nav-links a{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:16px}
+  .nav-links .nav-cta{margin-top:16px;text-align:center;justify-content:center}
+  .nav-toggle{display:flex}
+}
+
+/* ============================================================
+   Hero
+============================================================ */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;align-items:flex-end;
+  color:#fff;
+  background:var(--ink) url("https://aka.doubaocdn.com/s/OqviwKDV7Y") center 30%/cover no-repeat;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(90deg,rgba(13,22,27,.94) 0%,rgba(13,22,27,.78) 38%,rgba(13,22,27,.32) 72%,rgba(13,22,27,.18) 100%),
+    linear-gradient(0deg,rgba(13,22,27,.96) 0%,rgba(13,22,27,.25) 42%,transparent 75%);
+}
+.hero-inner{position:relative;padding:140px 0 0;width:100%}
+.hero-mono{
+  font-family:var(--font-mono);font-size:12.5px;letter-spacing:.26em;color:#7fd4c8;
+  display:flex;align-items:center;gap:12px;margin-bottom:24px;text-transform:uppercase;
+}
+.hero-mono::before{content:"";width:42px;height:2px;background:var(--amber)}
+.hero h1{
+  font-size:clamp(30px,5.2vw,58px);font-weight:900;line-height:1.18;letter-spacing:.01em;
+  text-shadow:0 4px 30px rgba(0,0,0,.4);
+}
+.hero h1 em{font-style:normal;color:var(--amber)}
+.hero .en-slogan{
+  margin-top:18px;font-family:var(--font-mono);font-size:clamp(13px,1.5vw,17px);
+  letter-spacing:.18em;color:#c8d9da;
+}
+.hero-sub{margin-top:20px;max-width:600px;font-size:16.5px;color:#d4e0e0;line-height:1.85}
+.hero-actions{display:flex;gap:16px;margin-top:36px;flex-wrap:wrap}
+.hero-stats{
+  position:relative;margin-top:74px;
+  border-top:1px solid rgba(255,255,255,.18);
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:rgba(13,22,27,.55);backdrop-filter:blur(6px);
+}
+.hero-stat{padding:24px 26px 26px;border-right:1px solid rgba(255,255,255,.12)}
+.hero-stat:last-child{border-right:none}
+.hero-stat b{display:block;font-size:clamp(26px,3vw,38px);font-weight:900;color:#fff;line-height:1.1;font-family:var(--font-mono)}
+.hero-stat b i{font-style:normal;color:var(--amber);font-size:.62em;margin-left:3px;font-family:var(--font-sans);font-weight:700}
+.hero-stat span{display:block;margin-top:7px;font-size:13px;color:var(--on-dark-2);letter-spacing:.06em}
+@media(max-width:760px){
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+  .hero-stat:nth-child(2){border-right:none}
+  .hero-stat:nth-child(1),.hero-stat:nth-child(2){border-bottom:1px solid rgba(255,255,255,.12)}
+  .hero-stats{margin-top:52px}
+}
+
+/* ============================================================
+   关于我们
+============================================================ */
+.about{background:var(--paper)}
+.about-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:start}
+@media(max-width:920px){.about-grid{grid-template-columns:1fr;gap:40px}}
+.about-text p{color:var(--text-2);font-size:15.5px;margin-bottom:18px}
+.about-text strong{color:var(--text);font-weight:700}
+.mission{
+  margin-top:26px;padding:26px 28px;border-left:3px solid var(--amber);
+  background:var(--card);box-shadow:var(--shadow);border-radius:0 var(--radius) var(--radius) 0;
+}
+.mission .lab{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.2em;color:var(--amber-deep);text-transform:uppercase;margin-bottom:10px}
+.mission p{font-size:16px;font-weight:500;color:var(--text);line-height:1.8;margin:0}
+.about-side{display:flex;flex-direction:column;gap:22px}
+.fact-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 28px;box-shadow:0 8px 26px -18px rgba(19,29,34,.25)}
+.fact-card h3{font-size:16.5px;font-weight:700;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.fact-card h3 svg{width:20px;height:20px;color:var(--teal)}
+.fact-card ol{counter-reset:proj;display:flex;flex-direction:column;gap:10px}
+.fact-card li{
+  counter-increment:proj;position:relative;padding-left:40px;font-size:14.5px;color:var(--text-2);line-height:1.55;
+}
+.fact-card li::before{
+  content:"P" counter(proj,"01");position:absolute;left:0;top:1px;
+  font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--teal);
+  border:1px solid #b9d2cd;border-radius:3px;padding:2px 5px;background:var(--teal-soft);
+}
+.future{
+  background:linear-gradient(120deg,var(--teal-deep),var(--teal));
+  color:#fff;border-radius:var(--radius);padding:26px 28px;position:relative;overflow:hidden;
+}
+.future::after{
+  content:"";position:absolute;right:-30px;top:-30px;width:150px;height:150px;border:1.5px solid rgba(255,255,255,.18);border-radius:50%;
+  box-shadow:0 0 0 22px rgba(255,255,255,.05),0 0 0 44px rgba(255,255,255,.04);
+}
+.future .lab{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.2em;color:#9fe0d5;text-transform:uppercase;margin-bottom:10px}
+.future h3{font-size:17px;font-weight:700;margin-bottom:8px}
+.future p{font-size:14px;color:#cfe3df;line-height:1.75;position:relative;z-index:1}
+.future .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;position:relative;z-index:1}
+.future .tags span{font-family:var(--font-mono);font-size:11.5px;border:1px solid rgba(255,255,255,.35);border-radius:3px;padding:3px 9px;letter-spacing:.06em}
+
+/* ============================================================
+   主营业务
+============================================================ */
+.biz{background:var(--card)}
+.biz-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:920px){.biz-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.biz-grid{grid-template-columns:1fr}}
+.biz-card{
+  position:relative;border:1px solid var(--line);border-radius:var(--radius);
+  padding:30px 26px 28px;background:#fff;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+  overflow:hidden;
+}
+.biz-card::before{
+  content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:var(--teal);
+  transform:scaleX(0);transform-origin:left;transition:transform .25s ease;
+}
+.biz-card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:#bcd2ce}
+.biz-card:hover::before{transform:scaleX(1);background:var(--amber)}
+.biz-ico{
+  width:48px;height:48px;border-radius:var(--radius);background:var(--teal-soft);
+  display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+}
+.biz-ico svg{width:25px;height:25px;color:var(--teal)}
+.biz-card:hover .biz-ico{background:var(--teal)}
+.biz-card:hover .biz-ico svg{color:#fff}
+.biz-card h3{font-size:17px;font-weight:700;line-height:1.4}
+.biz-card .en{font-family:var(--font-mono);font-size:11.5px;color:var(--text-3);letter-spacing:.04em;margin:6px 0 12px;display:block}
+.biz-card p{font-size:13.8px;color:var(--text-2);line-height:1.7}
+.biz-no{position:absolute;right:18px;top:16px;font-family:var(--font-mono);font-size:12px;color:#c4d0ce;letter-spacing:.1em}
+
+/* ============================================================
+   核心能力（深色）
+============================================================ */
+.cap{background:var(--ink);color:var(--on-dark)}
+.cap-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:8px}
+@media(max-width:960px){.cap-cols{grid-template-columns:1fr}}
+.cap-col{
+  background:var(--ink-2);border:1px solid var(--line-dark);border-radius:var(--radius);overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.cap-img{height:196px;overflow:hidden;position:relative;border-bottom:1px solid var(--line-dark)}
+.cap-img img{width:100%;height:100%;object-fit:cover;filter:saturate(.92);transition:transform .4s ease}
+.cap-col:hover .cap-img img{transform:scale(1.05)}
+.cap-img::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(27,40,48,.55),transparent 55%)}
+.cap-body{padding:26px 24px 28px}
+.cap-body h3{font-size:18px;font-weight:700;color:#fff}
+.cap-body .en{font-family:var(--font-mono);font-size:11px;color:#6fb3aa;letter-spacing:.08em;margin:5px 0 18px}
+.cap-block{margin-bottom:18px}
+.cap-block:last-child{margin-bottom:0}
+.cap-block h4{
+  font-size:13.5px;font-weight:700;color:var(--amber);letter-spacing:.05em;
+  display:flex;align-items:center;gap:9px;margin-bottom:9px;
+}
+.cap-block h4::before{content:"";width:7px;height:7px;background:var(--amber);transform:rotate(45deg);flex:none}
+.cap-block ul{display:flex;flex-direction:column;gap:6px}
+.cap-block li{
+  position:relative;padding-left:16px;font-size:13.3px;color:var(--on-dark-2);line-height:1.55;
+}
+.cap-block li::before{content:"";position:absolute;left:2px;top:10px;width:5px;height:1.5px;background:#5f807c}
+.cap-block li small{font-family:var(--font-mono);font-size:10.5px;color:#7d9694;letter-spacing:.02em;display:block;margin-top:1px}
+
+/* ============================================================
+   汽车电子测试经验
+============================================================ */
+.test-exp{background:var(--card)}
+.te-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:920px){.te-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.te-grid{grid-template-columns:1fr}}
+.te-card{
+  position:relative;border:1px solid var(--line);border-radius:var(--radius);
+  padding:26px 24px 24px;background:#fff;overflow:hidden;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.te-card::before{
+  content:"";position:absolute;left:0;top:0;width:3px;height:100%;
+  background:var(--teal);transform:scaleY(0);transform-origin:top;transition:transform .25s ease;
+}
+.te-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#bcd2ce}
+.te-card:hover::before{transform:scaleY(1);background:var(--amber)}
+.te-card .t-no{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:#b7c6c3}
+.te-card h3{font-size:16.5px;font-weight:700;margin:10px 0 8px;display:flex;align-items:center;gap:9px}
+.te-card h3 svg{width:19px;height:19px;color:var(--teal);flex:none}
+.te-card p{font-size:13.3px;color:var(--text-2);line-height:1.65}
+.te-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.te-tags span{
+  font-family:var(--font-mono);font-size:10.5px;color:var(--teal-deep);
+  background:var(--teal-soft);border:1px solid #c4dcd7;border-radius:3px;padding:3px 8px;letter-spacing:.02em;
+}
+.te-summary{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.te-summary{grid-template-columns:1fr}}
+.te-sum-col{border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);padding:22px 24px}
+.te-sum-col h4{
+  font-size:13px;font-weight:700;letter-spacing:.14em;color:var(--teal);text-transform:uppercase;
+  display:flex;align-items:center;gap:9px;margin-bottom:14px;
+}
+.te-sum-col h4::before{content:"";width:7px;height:7px;background:var(--amber);transform:rotate(45deg);flex:none}
+.te-sum-col .badges{display:flex;flex-wrap:wrap;gap:8px}
+.te-sum-col .badges span{
+  font-size:12.8px;font-weight:500;color:var(--text);background:#fff;
+  border:1px solid var(--line);border-radius:3px;padding:6px 12px;
+}
+.te-sum-col .badges span b{
+  color:var(--amber-deep);font-family:var(--font-mono);font-size:10.5px;
+  margin-right:6px;letter-spacing:.06em;
+}
+
+/* ============================================================
+   项目案例（交互切换）
+============================================================ */
+.cases{background:var(--paper)}
+.case-shell{
+  display:grid;grid-template-columns:340px 1fr;gap:0;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);min-height:480px;
+}
+@media(max-width:900px){.case-shell{grid-template-columns:1fr}}
+.case-tabs{background:var(--ink);padding:14px;display:flex;flex-direction:column;gap:6px}
+.case-tab{
+  text-align:left;padding:16px 18px;border-radius:var(--radius);color:var(--on-dark-2);
+  border-left:3px solid transparent;transition:background .18s,border-color .18s,color .18s;
+  display:flex;flex-direction:column;gap:5px;width:100%;
+}
+.case-tab .t-no{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;color:#6f8f8b}
+.case-tab .t-name{font-size:15px;font-weight:700;line-height:1.4}
+.case-tab:hover{background:var(--ink-3);color:#dbe9e8}
+.case-tab.active{background:var(--ink-3);border-left-color:var(--amber);color:#fff}
+.case-tab.active .t-no{color:var(--amber)}
+.case-panels{position:relative}
+.case-panel{display:none;padding:34px 38px 38px}
+.case-panel.active{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.case-panel .c-meta{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.16em;color:var(--teal);text-transform:uppercase;margin-bottom:12px}
+.case-panel h3{font-size:22px;font-weight:900;line-height:1.35;margin-bottom:14px}
+.case-panel .c-desc{color:var(--text-2);font-size:14.5px;line-height:1.85;margin-bottom:20px}
+.case-imgs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.case-imgs.single{grid-template-columns:1fr}
+.case-imgs figure{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#0e161a}
+.case-imgs img{width:100%;height:210px;object-fit:cover;object-position:center top}
+.case-imgs figcaption{font-family:var(--font-mono);font-size:11px;color:var(--text-3);padding:8px 12px;background:#f7f9f9;border-top:1px solid var(--line)}
+@media(max-width:560px){.case-imgs{grid-template-columns:1fr}.case-panel{padding:26px 22px 30px}}
+.case-tags{display:flex;flex-wrap:wrap;gap:8px}
+.case-tags span{
+  font-family:var(--font-mono);font-size:11.5px;color:var(--teal-deep);
+  background:var(--teal-soft);border:1px solid #c4dcd7;border-radius:3px;padding:4px 10px;letter-spacing:.03em;
+}
+.case-points{display:grid;grid-template-columns:repeat(2,1fr);gap:9px 18px;margin-bottom:22px}
+@media(max-width:560px){.case-points{grid-template-columns:1fr}}
+.case-points li{position:relative;padding-left:20px;font-size:13.6px;color:var(--text-2);line-height:1.6}
+.case-points li::before{
+  content:"";position:absolute;left:2px;top:9px;width:8px;height:8px;
+  border:1.5px solid var(--amber);border-radius:50%;
+}
+.case-points li b{color:var(--text);font-weight:700}
+/* 第五个项目：无图信息卡 */
+.case-panel.line-panel{display:none}
+.case-panel.line-panel.active{display:flex;flex-direction:column;justify-content:center;min-height:420px}
+.line-flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:10px 0 22px}
+.line-flow .node{
+  background:var(--teal-soft);border:1px solid #bfd8d3;border-radius:var(--radius);
+  padding:12px 16px;font-size:13.5px;font-weight:700;color:var(--teal-deep);text-align:center;
+}
+.line-flow .arr{width:26px;height:2px;background:var(--amber);position:relative;margin:0 4px;flex:none}
+.line-flow .arr::after{content:"";position:absolute;right:-1px;top:-3.5px;border-left:7px solid var(--amber);border-top:4.5px solid transparent;border-bottom:4.5px solid transparent}
+
+/* ============================================================
+   客户
+============================================================ */
+.customers{background:linear-gradient(120deg,var(--teal-deep),#0c5c63);color:#fff;padding:78px 0}
+.customers .sec-head{margin-bottom:40px}
+.customer-row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media(max-width:820px){.customer-row{grid-template-columns:repeat(2,1fr)}}
+.customer-item{
+  border:1px solid rgba(255,255,255,.22);border-radius:var(--radius);
+  padding:30px 18px;text-align:center;letter-spacing:.1em;
+  transition:background .2s,border-color .2s,transform .2s;
+}
+.customer-item:hover{border-color:var(--amber);background:rgba(255,255,255,.06);transform:translateY(-3px)}
+.customer-item b{display:block;font-size:17px;font-weight:700;line-height:1.3}
+.customer-item small{display:block;font-family:var(--font-mono);font-size:10px;color:#9fcbc6;margin-top:7px;letter-spacing:.08em}
+.customer-note{margin-top:26px;font-size:13px;color:#b7d4d0;font-family:var(--font-mono);letter-spacing:.04em}
+
+/* ============================================================
+   联系
+============================================================ */
+.contact{background:var(--paper)}
+.contact-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:stretch}
+@media(max-width:880px){.contact-grid{grid-template-columns:1fr}}
+.contact-info h3{font-size:24px;font-weight:900;margin-bottom:22px;line-height:1.4}
+.ci-list{display:flex;flex-direction:column;gap:4px}
+.ci-item{display:flex;gap:18px;align-items:flex-start;padding:19px 0;border-bottom:1px dashed var(--line)}
+.ci-item svg{width:23px;height:23px;color:var(--teal);flex:none;margin-top:2px}
+.ci-item .k{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;color:var(--text-3);text-transform:uppercase}
+.ci-item .v{font-size:16px;font-weight:700;margin-top:3px}
+.ci-item .v a{border-bottom:1.5px solid var(--amber)}
+.ci-item .v a:hover{color:var(--teal)}
+.contact-card{
+  background:var(--ink);color:var(--on-dark);border-radius:var(--radius);padding:38px 34px;
+  display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;
+}
+.contact-card::before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+.contact-card>*{position:relative;z-index:1}
+.contact-card .q{font-size:21px;font-weight:900;line-height:1.5}
+.contact-card .q em{font-style:normal;color:var(--amber)}
+.contact-card p{color:var(--on-dark-2);font-size:14px;margin-top:14px;line-height:1.8}
+.contact-card .mono{font-family:var(--font-mono);font-size:12px;color:#7fb0aa;margin-top:26px;letter-spacing:.08em}
+
+/* ============================================================
+   页脚
+============================================================ */
+.footer{background:#0d1519;color:var(--on-dark-2);padding:46px 0 34px;font-size:13.5px}
+.footer .wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:28px;flex-wrap:wrap}
+.footer-brand{display:flex;align-items:center;gap:11px;color:#fff;margin-bottom:14px}
+.footer-brand svg{width:32px;height:32px}
+.footer-brand b{letter-spacing:.14em;font-size:15px}
+.footer-links{display:flex;gap:22px;flex-wrap:wrap}
+.footer-links a:hover{color:var(--amber)}
+.footer .tick-rule{color:#3a5158;margin-top:26px}
+.footer-copy{margin-top:14px;font-family:var(--font-mono);font-size:11.5px;color:#5d747a;letter-spacing:.06em;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+/* ---------- 滚动揭示 ---------- */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none}
+}
+:focus-visible{outline:2.5px solid var(--amber);outline-offset:3px;border-radius:2px}
+</style>
+</head>
+<body>
+
+<!-- ===== 导航 ===== -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="KERRUS 首页">
+      <!-- 复刻 KERRUS 品牌标识：层叠椭圆弧，绿→橙渐变 -->
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <defs>
+          <linearGradient id="lg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#35a849"/><stop offset=".55" stop-color="#c9ce2e"/><stop offset="1" stop-color="#f59a23"/>
+          </linearGradient>
+        </defs>
+        <g fill="none" stroke="url(#lg)" stroke-width="3.4" stroke-linecap="round">
+          <ellipse cx="24" cy="11" rx="17" ry="6.5"/>
+          <ellipse cx="24" cy="17" rx="17" ry="6.5"/>
+          <ellipse cx="24" cy="23" rx="17" ry="6.5"/>
+          <ellipse cx="24" cy="29" rx="17" ry="6.5"/>
+          <ellipse cx="24" cy="35" rx="17" ry="6.5"/>
+        </g>
+      </svg>
+      <span><b>KERRUS</b><small>ENGINEERING · TOMORROW</small></span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="主导航">
+      <a href="#about">关于科瑞斯</a>
+      <a href="#biz">主营业务</a>
+      <a href="#capability">核心能力</a>
+      <a href="#testing">测试经验</a>
+      <a href="#cases">项目案例</a>
+      <a href="#customers">合作客户</a>
+      <a href="#contact">联系我们</a>
+      <a href="#contact" class="btn btn-primary nav-cta">方案咨询</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="lang-btn" id="langBtn" type="button" aria-label="切换语言">EN</button>
+      <button class="nav-toggle" id="navToggle" aria-label="打开菜单" aria-expanded="false">
+        <i></i><i></i><i></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="hero" id="top">
+  <div class="wrap hero-inner">
+    <div class="hero-mono">Automotive Electronic Test &amp; Industrial Automation</div>
+    <h1>汽车电子测试与<br>工业自动化<em>整线解决方案</em></h1>
+    <div class="en-slogan">engineering. tomorrow. together.</div>
+    <p class="hero-sub">南京科瑞斯软件科技有限公司，专注工业自动化技术及汽车电子领域的装配与测试解决方案，团队来自非标自动化行业，具备丰富的自动化装配线设计与测试台开发经验。</p>
+    <div class="hero-actions">
+      <a href="#cases" class="btn btn-primary">查看项目案例
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#capability" class="btn btn-ghost">了解服务能力</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><b data-count="2019">0</b><span>成立于南京江北新区</span></div>
+      <div class="hero-stat"><b data-count="6">0<i>大</i></b><span>主营业务板块</span></div>
+      <div class="hero-stat"><b data-count="100">0<i>Hz</i></b><span>测试信号采样率</span></div>
+      <div class="hero-stat"><b data-count="6">0<i>类</i></b><span>已交付典型项目</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 关于我们 ===== -->
+<section class="sec about" id="about">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Company Instruction</div>
+      <h2 class="sec-title">关于科瑞斯</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-text reveal d1">
+        <p><strong>南京科瑞斯软件科技有限公司</strong>成立于 2019 年，位于南京市江北新区，是一家专注于提供工业自动化技术及汽车电子领域装配及测试解决方案的供应商，能够为客户提供优质的服务和技术支持，快速响应客户的需求。</p>
+        <p>公司成员均来自非标自动化行业，拥有丰富的<strong>自动化装配线设计</strong>与<strong>测试台开发</strong>经验，业务覆盖电气自动化、机械设计与制造、上位机软件设计、汽车电子测试服务、工业机器人系统集成与离线仿真。</p>
+        <div class="mission">
+          <div class="lab">Our Mission · 科瑞斯的使命</div>
+          <p>通过提供最高质量的解决方案，利用最新的技术在市场上赢得客户；同时在同一时间，减少客户的资本投资。</p>
+        </div>
+      </div>
+      <div class="about-side">
+        <div class="fact-card reveal d2">
+          <h3>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            已开发交付的典型项目
+          </h3>
+          <ol>
+            <li>电子油泵耐久和性能测试台</li>
+            <li>DCT 变速箱 EOL 测试台</li>
+            <li>涡轮增压器测试台</li>
+            <li>车身控制器 BGM 功能测试台</li>
+            <li>伟世通 MRA 信息娱乐控制器装配及烧录线</li>
+            <li>半导体设备上位机控制与 SECS/GEM 通讯软件</li>
+          </ol>
+        </div>
+        <div class="future reveal d3">
+          <div class="lab">What's Next · 公司方向与未来</div>
+          <h3>制造执行系统 MES 即将推出</h3>
+          <p>搭配物联网以及传感器，为工厂的生产制造自动化水平提供新的技术支持。</p>
+          <div class="tags"><span>MES</span><span>IIoT</span><span>Sensor Network</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 主营业务 ===== -->
+<section class="sec biz" id="biz">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Business Service</div>
+      <h2 class="sec-title">主营业务及产品服务</h2>
+      <p class="sec-lead">从机械、电气到软件与仿真，六大板块构成完整的非标自动化交付能力。</p>
+    </div>
+    <div class="biz-grid">
+      <div class="biz-card reveal">
+        <span class="biz-no">/01</span>
+        <div class="biz-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13 2L4.5 13.5H11L10 22l8.5-12H12L13 2z"/></svg></div>
+        <h3>电气自动化</h3><span class="en">Electrical Automation</span>
+        <p>PLC 程序调试、玻璃涂胶、机器人搬运、车底涂胶与整车喷涂，覆盖电气设计、安装、调试与上位机调试全流程。</p>
+      </div>
+      <div class="biz-card reveal d1">
+        <span class="biz-no">/02</span>
+        <div class="biz-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7h18v10H3z"/><path d="M7 17v3M17 17v3M8 11h.01M12 11h.01M16 11h.01"/><path d="M7 7V4h10v3"/></svg></div>
+        <h3>机械设计与制造</h3><span class="en">Mechanical Design &amp; Manufacturing</span>
+        <p>装配线体、夹具工装、测试设备与下线测试产线设计，含输送机构、有限元受力分析与 3D 模拟动画。</p>
+      </div>
+      <div class="biz-card reveal d2">
+        <span class="biz-no">/03</span>
+        <div class="biz-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/><path d="M9 9l2 2 4-4"/></svg></div>
+        <h3>上位机软件设计</h3><span class="en">Software Design</span>
+        <p>测试软件设计与集成、生产及追溯系统（Product &amp; MES）、2D/3D 视觉定位系统集成、用户管理与数据报表。</p>
+      </div>
+      <div class="biz-card reveal">
+        <span class="biz-no">/04</span>
+        <div class="biz-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
+        <h3>汽车电子测试服务</h3><span class="en">Automotive Electronic Test Service</span>
+        <p>变速箱 EOL、车身控制器、电子泵、涡轮增压器等汽车部件的功能、性能与耐久测试台开发。</p>
+      </div>
+      <div class="biz-card reveal d1">
+        <span class="biz-no">/05</span>
+        <div class="biz-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="9" width="16" height="8" rx="1.5"/><path d="M12 9V6M9 6h6M7 17v2M17 17v2"/><circle cx="9.5" cy="13" r="1.2"/><circle cx="14.5" cy="13" r="1.2"/></svg></div>
+        <h3>工业机器人系统集成</h3><span class="en">Industrial Robot SI</span>
+        <p>机器人搬运、涂胶、喷涂与视觉引导工作站集成，OPC 配置、服务器配置与 PLC 接口联调。</p>
+      </div>
+      <div class="biz-card reveal d2">
+        <span class="biz-no">/06</span>
+        <div class="biz-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3a9 9 0 109 9"/><path d="M12 7v5l3.5 2"/><path d="M21 4l-4.5 4.5M21 9V4h-5"/></svg></div>
+        <h3>离线仿真</h3><span class="en">Offline Simulation</span>
+        <p>机器人产线与测试节拍的离线仿真验证、时序分析与 3D 模拟动画，在投产前锁定方案风险。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 核心能力 ===== -->
+<section class="sec cap on-dark blueprint" id="capability">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Engineering Capability</div>
+      <h2 class="sec-title">从设计到陪产的完整交付链路</h2>
+      <p class="sec-lead">三大工程能力协同推进，每个环节都有明确的交付物与验收动作。</p>
+    </div>
+    <div class="cap-cols">
+      <!-- 电气自动化 -->
+      <article class="cap-col reveal">
+        <div class="cap-img"><img src="https://aka.doubaocdn.com/s/IIqCZRV2Ah" alt="机器人自动化产线现场" loading="lazy"></div>
+        <div class="cap-body">
+          <h3>电气自动化</h3><div class="en">Electrical Automation</div>
+          <div class="cap-block">
+            <h4>电气设计 Electric Design</h4>
+            <ul>
+              <li>控制柜及元器件选型<small>Material list</small></li>
+              <li>通讯设备选配<small>Communication devices selection</small></li>
+              <li>I/O 点分配 · 图纸绘制<small>Electric Drawing</small></li>
+              <li>程序和 HMI 设计<small>Programming &amp; HMI design</small></li>
+            </ul>
+          </div>
+          <div class="cap-block">
+            <h4>电气安装 Electrical Installation</h4>
+            <ul>
+              <li>控制柜摆放及桥架铺设 · 母线排接入</li>
+              <li>设备动力电缆接入 · 接电检测</li>
+              <li>设备及线缆标签制作</li>
+            </ul>
+          </div>
+          <div class="cap-block">
+            <h4>电气调试 Electrical Commissioning</h4>
+            <ul>
+              <li>网络组态，I/O 与安全信号检验</li>
+              <li>互锁信号校验，与机器人及视觉系统测试时序</li>
+              <li>模拟功能及联动测试，陪产跟踪与电气培训</li>
+            </ul>
+          </div>
+          <div class="cap-block">
+            <h4>上位机调试 HMI Commissioning</h4>
+            <ul>
+              <li>电脑硬件 / 系统选配与开发环境配置</li>
+              <li>机器人 OPC、服务器、PLC 接口配置</li>
+              <li>与 PLC 对点、功能与联动调试，陪产及培训</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+      <!-- 机械设计 -->
+      <article class="cap-col reveal d1">
+        <div class="cap-img"><img src="https://aka.doubaocdn.com/s/tYsOEXxpgG" alt="机械测试台设备" loading="lazy"></div>
+        <div class="cap-body">
+          <h3>机械设计与制造</h3><div class="en">Mechanical Design &amp; Manufacturing</div>
+          <div class="cap-block">
+            <h4>线体与设备设计</h4>
+            <ul>
+              <li>装配线体设计<small>Assembly Line Design</small></li>
+              <li>夹具及工装设计<small>Tooling Design</small></li>
+              <li>测试设备设计<small>Test Equipment</small></li>
+              <li>下线测试产线<small>EOL Design</small></li>
+            </ul>
+          </div>
+          <div class="cap-block">
+            <h4>专项设计能力</h4>
+            <ul>
+              <li>输漆管路设计<small>Paint supply system</small></li>
+              <li>输送机构 Stop &amp; Go / Tracking<small>Conveyor</small></li>
+              <li>车身 / 焊装工装夹具设计<small>Fixtures design</small></li>
+              <li>有限元载荷受力分析</li>
+              <li>3D 模拟动画 · 产品研发</li>
+            </ul>
+          </div>
+          <div class="cap-block">
+            <h4>设计验证</h4>
+            <ul>
+              <li>机器人立柱应力分析：满载 700kg 向下重力工况校验，立柱弯曲变形处于安全等级范围内</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+      <!-- 软件设计 -->
+      <article class="cap-col reveal d2">
+        <div class="cap-img"><img src="https://aka.doubaocdn.com/s/VeUUMP2whV" alt="上位机仿真测试软件界面" loading="lazy"></div>
+        <div class="cap-body">
+          <h3>软件设计</h3><div class="en">Software Design</div>
+          <div class="cap-block">
+            <h4>测试软件集成</h4>
+            <ul>
+              <li>软件设计及测试集成<small>Software Design and Test</small></li>
+              <li>测试流程编辑、参数配置与传感器校准</li>
+              <li>实验数据生产、查看与信息列表显示</li>
+            </ul>
+          </div>
+          <div class="cap-block">
+            <h4>生产与追溯</h4>
+            <ul>
+              <li>生产及追溯系统<small>Product &amp; MES</small></li>
+              <li>用户管理<small>User management</small></li>
+              <li>数据显示及报表生成<small>Data Analysis Report</small></li>
+            </ul>
+          </div>
+          <div class="cap-block">
+            <h4>机器视觉</h4>
+            <ul>
+              <li>视觉 2D、3D 定位系统集成<small>Vision 2D, 3D</small></li>
+              <li>视觉与机器人测试时序联动</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 汽车电子测试经验 ===== -->
+<section class="sec test-exp" id="testing">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Automotive Electronics Testing Experience</div>
+      <h2 class="sec-title">汽车电子测试经验</h2>
+      <p class="sec-lead">覆盖变速箱、车身控制器、电子泵与涡轮增压器等核心部件的测试台开发，贯穿 EOL 下线、功能、性能与耐久验证全流程。</p>
+    </div>
+    <div class="te-grid">
+      <div class="te-card reveal">
+        <span class="t-no">T-01 · TRANSMISSION</span>
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>DCT 变速箱 EOL 测试台</h3>
+        <p>变速箱下线测试台，采集油路、NVH、输入/输出驱动与 Park Lock 信号，TCU 数据经 CAN Cyclic 周期读取，锁止力与位置分别由 Load Cell、Encoder 测量。</p>
+        <div class="te-tags"><span>100Hz 采样</span><span>CAN Cyclic</span><span>NVH</span><span>Load Cell</span><span>Encoder</span></div>
+      </div>
+      <div class="te-card reveal d1">
+        <span class="t-no">T-02 · BCM TEST</span>
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M8 9h8M8 12.5h5M8 16h3"/><path d="M15.5 13.5l2 2 3.5-4"/></svg>车身控制器 BGM 功能测试</h3>
+        <p>车身控制器作为乘用车主节点，测试台同步仿真 CAN、LIN、FlexRay 总线，并支持车载以太网 DoIP 诊断与 Flash 刷写，兼顾功能安全特性验证。</p>
+        <div class="te-tags"><span>CAN</span><span>LIN</span><span>FlexRay</span><span>DoIP</span><span>Flash</span></div>
+      </div>
+      <div class="te-card reveal d2">
+        <span class="t-no">T-03 · TURBO TEST</span>
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3a9 9 0 109 9"/><path d="M12 8a4 4 0 104 4"/><path d="M12 8V3M21 3l-5 5"/></svg>涡轮增压器测试系统</h3>
+        <p>密闭实验室配合燃烧器，对油温、油压、水温与流量多工况闭环控制，通过热老化与热冲击验证可靠性，并用 Map Editor 标定压气机特性曲线。</p>
+        <div class="te-tags"><span>热老化</span><span>热冲击</span><span>闭环控制</span><span>Map 标定</span></div>
+      </div>
+      <div class="te-card reveal">
+        <span class="t-no">T-04 · E-PUMP TEST</span>
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 14h3l2-6 3 10 3-7 1.5 3H20"/></svg>电子油泵耐久与性能测试</h3>
+        <p>基于 LabVIEW 的电子泵耐久与性能软件，支持多泵并行试验、泵通讯信号实时显示、试验量统计与传感器校准，配套数据生产与报表能力。</p>
+        <div class="te-tags"><span>LabVIEW</span><span>耐久试验</span><span>多泵并行</span><span>传感器校准</span></div>
+      </div>
+      <div class="te-card reveal d1">
+        <span class="t-no">T-05 · INFOTAINMENT</span>
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8M12 17v4"/><path d="M7 9l3 2-3 2M12 12h5"/></svg>信息娱乐控制器装配烧录线</h3>
+        <p>面向信息娱乐控制器的整线装配与程序烧录，整合机械工装、电气控制与上位机追溯软件，实现上料、装配、烧录、测试到下线的有序流转。</p>
+        <div class="te-tags"><span>程序烧录</span><span>整线集成</span><span>追溯</span><span>MES</span></div>
+      </div>
+      <div class="te-card reveal d2">
+        <span class="t-no">T-06 · TEST SERVICE</span>
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M14.7 6.3a4.5 4.5 0 00-6.4 6.4L3 18v3h3l5.3-5.3a4.5 4.5 0 006.4-6.4l-3 3-2-2 3-3z"/></svg>汽车电子测试服务</h3>
+        <p>承接汽车电子测试台的一站式开发：机械、电气、软件设计与陪产交付，覆盖 EOL 下线、功能、性能、耐久等测试台型，快速响应客户需求。</p>
+        <div class="te-tags"><span>EOL</span><span>功能测试</span><span>性能测试</span><span>耐久测试</span><span>陪产</span></div>
+      </div>
+    </div>
+    <div class="te-summary">
+      <div class="te-sum-col reveal">
+        <h4>Test Types · 测试类型</h4>
+        <div class="badges">
+          <span><b>01</b>EOL 下线测试</span><span><b>02</b>功能测试</span><span><b>03</b>性能测试</span>
+          <span><b>04</b>耐久测试</span><span><b>05</b>可靠性验证（热老化 / 热冲击）</span><span><b>06</b>程序烧录与诊断</span>
+        </div>
+      </div>
+      <div class="te-sum-col reveal d1">
+        <h4>Bus &amp; Acquisition · 总线与采集技术</h4>
+        <div class="badges">
+          <span><b>A</b>CAN</span><span><b>B</b>LIN</span><span><b>C</b>FlexRay</span>
+          <span><b>D</b>车载以太网 DoIP</span><span><b>E</b>100Hz 采样</span><span><b>F</b>LabVIEW</span><span><b>G</b>数据追溯报表</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 项目案例 ===== -->
+<section class="sec cases" id="cases">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Delivered Projects</div>
+      <h2 class="sec-title">典型项目案例</h2>
+      <p class="sec-lead">点击左侧项目，查看测试对象、系统构成与关键技术点。</p>
+    </div>
+    <div class="case-shell reveal">
+      <div class="case-tabs" role="tablist" aria-label="项目案例列表">
+        <button class="case-tab active" data-case="c1" role="tab" aria-selected="true">
+          <span class="t-no">CASE 01 · EOL TEST</span><span class="t-name">DCT 变速箱 EOL 测试台</span>
+        </button>
+        <button class="case-tab" data-case="c2" role="tab" aria-selected="false">
+          <span class="t-no">CASE 02 · BCM TEST</span><span class="t-name">车身控制器 BGM 功能测试</span>
+        </button>
+        <button class="case-tab" data-case="c3" role="tab" aria-selected="false">
+          <span class="t-no">CASE 03 · TURBO TEST</span><span class="t-name">涡轮增压器测试系统</span>
+        </button>
+        <button class="case-tab" data-case="c4" role="tab" aria-selected="false">
+          <span class="t-no">CASE 04 · E-PUMP TEST</span><span class="t-name">电子泵性能与耐久测试软件</span>
+        </button>
+        <button class="case-tab" data-case="c5" role="tab" aria-selected="false">
+          <span class="t-no">CASE 05 · ASSEMBLY LINE</span><span class="t-name">MRA 信息娱乐控制器装配烧录线</span>
+        </button>
+        <button class="case-tab" data-case="c6" role="tab" aria-selected="false">
+          <span class="t-no">CASE 06 · SEMI EQUIPMENT</span><span class="t-name">半导体设备上位机与 SECS/GEM 通讯软件</span>
+        </button>
+      </div>
+      <div class="case-panels">
+        <!-- C1 DCT -->
+        <div class="case-panel active" id="c1" role="tabpanel">
+          <div class="c-meta">DCT Transmission · End of Line</div>
+          <h3>DCT 变速箱 EOL 测试台</h3>
+          <p class="c-desc">针对双离合器变速箱下线测试，台架采集 Oil In / Oil Out 油路、NVH Sensor、Input Drive 与 Output Drive 1/2、Park Lock 等部位信号；模拟量 / 数字量经 Drive Control 以 100Hz 采样，TCU 相关信号通过 CAN Cyclic 周期读取。</p>
+          <div class="case-imgs single">
+            <figure>
+              <img src="https://aka.doubaocdn.com/s/8NEsYB6Mhf" alt="DCT 变速箱 EOL 测试台实景" loading="lazy">
+              <figcaption>DCT EOL BENCH · Oil In/Out · NVH Sensor · Input/Output Drive · Park Lock</figcaption>
+            </figure>
+          </div>
+          <ul class="case-points">
+            <li><b>100Hz 采样：</b>Input/Output 模拟数字信号、扭矩信号</li>
+            <li><b>Load Cell：</b>Parking Lock Force 锁止力测量</li>
+            <li><b>Encoder：</b>Parking Lock Position 锁止位置计数</li>
+            <li><b>CAN Cyclic：</b>转速、主油路 / 离合器压力与电流位置</li>
+            <li><b>换挡测试：</b>Shift Rod 电流与位置 1-4 挡、多电流值 GU1+GU2</li>
+            <li><b>状态监测：</b>当前 / 目标挡位、变速箱状态、油液与离合器温度</li>
+          </ul>
+          <div class="case-tags">
+            <span>TCU CAN Cyclic</span><span>100 Hz Sample</span><span>Load Cell</span><span>Encoder</span><span>NVH</span><span>Drive Control</span>
+          </div>
+        </div>
+        <!-- C2 BGM -->
+        <div class="case-panel" id="c2" role="tabpanel">
+          <div class="c-meta">Body Control Module · Function Test</div>
+          <h3>车身控制器 BGM 功能测试台</h3>
+          <p class="c-desc">测试对象为车身控制器 BGM。作为乘用车上的主节点，其功能复杂、实时性要求高，还需要具备功能安全特性。测试台需要仿真 CAN、LIN、FlexRay 总线，以及基于车载以太网的 DoIP 诊断与 Flash 刷写功能。</p>
+          <div class="case-imgs single">
+            <figure>
+              <img src="https://aka.doubaocdn.com/s/WAbT9pVL4b" alt="车身控制器 BGM 功能测试软件界面" loading="lazy">
+              <figcaption>FUNCTION TEST SYSTEM · Step / Expectation Result / Measurement / Log</figcaption>
+            </figure>
+          </div>
+          <ul class="case-points">
+            <li><b>多总线仿真：</b>CAN、LIN、FlexRay 残余总线同步仿真</li>
+            <li><b>车载以太网：</b>DoIP 诊断通讯</li>
+            <li><b>Flash 刷写：</b>控制器程序烧录与校验</li>
+            <li><b>功能安全：</b>测试步骤、期望值与测量值自动判定</li>
+            <li><b>工装设计：</b>测试台正视结构、探针与指示灯布局</li>
+            <li><b>流程编排：</b>上电、释放、写配置、诊断与恢复全流程</li>
+          </ul>
+          <div class="case-tags">
+            <span>CAN</span><span>LIN</span><span>FlexRay</span><span>DoIP</span><span>Flash Programming</span><span>Functional Safety</span>
+          </div>
+        </div>
+        <!-- C3 Turbo -->
+        <div class="case-panel" id="c3" role="tabpanel">
+          <div class="c-meta">Turbocharger · Reliability Bench</div>
+          <h3>涡轮增压器测试系统</h3>
+          <p class="c-desc">测试对象为涡轮增压器：将其放置于密闭实验室内并连接到燃烧器，台架对油温、油压、水温以及流量在不同工况下进行控制，通过热老化和热冲击来验证涡轮增压器的可靠性和性能参数。</p>
+          <div class="case-imgs">
+            <figure>
+              <img src="https://aka.doubaocdn.com/s/a1S1yIbPkl" alt="涡轮增压器测试系统原理图" loading="lazy">
+              <figcaption>SYSTEM SCHEMATIC · Combustion 400kW · Air Cooler · Thermal Units</figcaption>
+            </figure>
+            <figure>
+              <img src="https://aka.doubaocdn.com/s/ATRK4EIEeU" alt="涡轮增压器测试软件与压气机特性曲线" loading="lazy">
+              <figcaption>TURBO MONITORING &amp; MAP EDITOR · Compressor Map</figcaption>
+            </figure>
+          </div>
+          <ul class="case-points">
+            <li><b>燃烧系统：</b>400kW 燃烧室、天然气与空气冷却干燥单元</li>
+            <li><b>热管理：</b>油温 / 油压 / 水温 / 流量多工况闭环控制</li>
+            <li><b>可靠性验证：</b>热老化（Thermal Aging）与热冲击（Thermal Shock）</li>
+            <li><b>特性标定：</b>Map Mapping Editor 压气机特性曲线绘制</li>
+            <li><b>加速度测量：</b>Acceleration measurement 振动监测</li>
+            <li><b>参数表：</b>流量、压比、效率、转速数据管理</li>
+          </ul>
+          <div class="case-tags">
+            <span>Thermal Shock</span><span>Compressor Map</span><span>Closed-loop Control</span><span>400kW Combustor</span>
+          </div>
+        </div>
+        <!-- C4 E-Pump -->
+        <div class="case-panel" id="c4" role="tabpanel">
+          <div class="c-meta">Electronic Pump · LabVIEW Based</div>
+          <h3>基于 LabVIEW 的电子泵性能和耐久软件</h3>
+          <p class="c-desc">面向电子油泵耐久与性能测试开发的上位机软件，覆盖参数配置、流程编辑、数据记录与用户权限管理，支撑多泵并行耐久试验。</p>
+          <div class="case-imgs single">
+            <figure>
+              <img src="https://aka.doubaocdn.com/s/juVGFUAWO3" alt="LabVIEW 电子泵测试软件主界面" loading="lazy">
+              <figcaption>PUMP MEASUREMENT SYSTEM · LabVIEW · Multi-channel Monitoring</figcaption>
+            </figure>
+          </div>
+          <ul class="case-points">
+            <li><b>主测试界面：</b>泵通讯信号及曲线实时显示</li>
+            <li><b>试验量统计：</b>总实验时间、泵开启时间、循环次数</li>
+            <li><b>环境量采集：</b>电压、电流、温度、环境大气压力与温度</li>
+            <li><b>独立控制：</b>可对所有泵进行单独控制</li>
+            <li><b>参数配置：</b>被测泵控制参数与性能判断参数</li>
+            <li><b>配套能力：</b>实验数据生产查看、传感器校准、流程编辑、用户管理</li>
+          </ul>
+          <div class="case-tags">
+            <span>LabVIEW</span><span>Durability Test</span><span>Sensor Calibration</span><span>Data Logging</span><span>User Management</span>
+          </div>
+        </div>
+        <!-- C5 MRA -->
+        <div class="case-panel line-panel" id="c5" role="tabpanel">
+          <div class="c-meta">Visteon MRA · Infotainment Controller Line</div>
+          <h3>伟世通 MRA 信息娱乐控制器装配及烧录线</h3>
+          <p class="c-desc">面向信息娱乐控制器的整线装配与程序烧录交付，整合机械工装、电气控制与上位机追溯软件，实现上料、装配、烧录、测试到下线的有序流转。</p>
+          <div class="line-flow">
+            <div class="node">上料定位</div><span class="arr"></span>
+            <div class="node">自动装配</div><span class="arr"></span>
+            <div class="node">程序烧录</div><span class="arr"></span>
+            <div class="node">功能测试</div><span class="arr"></span>
+            <div class="node">追溯下线</div>
+          </div>
+          <ul class="case-points">
+            <li><b>整线集成：</b>装配工位与烧录工位输送联动（Stop &amp; Go / Tracking）</li>
+            <li><b>程序烧录：</b>信息娱乐控制器固件烧写与结果校验</li>
+            <li><b>生产追溯：</b>Product &amp; MES 数据绑定与报表生成</li>
+            <li><b>用户权限：</b>工位操作与工程师分级用户管理</li>
+          </ul>
+          <div class="case-tags">
+            <span>Assembly Line</span><span>Flashing</span><span>Traceability</span><span>MES</span>
+          </div>
+        </div>
+        <!-- C6 Semiconductor Equipment Software -->
+        <div class="case-panel" id="c6" role="tabpanel">
+          <div class="c-meta">Semiconductor Equipment · SECS/GEM Host Interface</div>
+          <h3>半导体设备上位机控制与 SECS/GEM 通讯软件</h3>
+          <p class="c-desc">面向晶圆搬运 / 检测等半导体设备，开发设备端上位机控制软件：完成运动控制、流程编排、数据采集与报表管理；并通过 SECS/GEM（SEMI E5 / E37 / E30）与工厂主机 MES 建立标准化通讯，实现配方管理、数据上报与报警管理。</p>
+          <div class="case-imgs single">
+            <figure>
+              <img src="assets/semiconductor.png" alt="半导体 EFEM 设备与上位机控制软件" loading="lazy">
+              <figcaption>SEMI EQUIPMENT · EFEM · Wafer Handling · SECS/GEM Host Communication</figcaption>
+            </figure>
+          </div>
+          <ul class="case-points">
+            <li><b>设备控制：</b>运动控制卡 / PLC 联调，上下料流程状态机编排</li>
+            <li><b>SECS/GEM：</b>E5 消息、E37 HSMS 通讯、E30 GEM 三态模型</li>
+            <li><b>数据上报：</b>S6F11 事件上报、S1F3/F4 变量读取</li>
+            <li><b>配方管理：</b>S7F1/F3 配方下载、校验与存储</li>
+            <li><b>报警管理：</b>S5F1/F2 报警上报与清除确认</li>
+            <li><b>追溯对接：</b>MES 主机握手、Lot 追踪与报表生成</li>
+          </ul>
+          <div class="case-tags">
+            <span>SECS/GEM</span><span>HSMS</span><span>E30</span><span>MES</span><span>EFEM</span><span>状态机</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 客户 ===== -->
+<section class="customers on-dark" id="customers">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Customers</div>
+      <h2 class="sec-title">服务全球汽车供应链客户</h2>
+    </div>
+    <div class="customer-row">
+      <div class="customer-item reveal"><b>PIERBURG</b><small>PUMP TECHNOLOGY</small></div>
+      <div class="customer-item reveal d1"><b>TRW</b><small>AUTOMOTIVE SAFETY</small></div>
+      <div class="customer-item reveal d2"><b>SACHS</b><small>DRIVETRAIN &amp; CHASSIS</small></div>
+      <div class="customer-item reveal d3"><b>thyssenkrupp</b><small>INDUSTRIAL GROUP</small></div>
+    </div>
+    <div class="customer-note reveal">// 皮尔博格 · TRW · SACHS · 蒂森克虏伯 — 长期合作的汽车零部件与工业集团客户</div>
+  </div>
+</section>
+
+<!-- ===== 联系我们 ===== -->
+<section class="sec contact" id="contact">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Contact Us</div>
+      <h2 class="sec-title">把测试需求交给科瑞斯</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info reveal d1">
+        <h3>欢迎沟通测试台与自动化产线需求，我们将快速给出工程方案。</h3>
+        <div class="ci-list">
+          <div class="ci-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-6.1-7-11a7 7 0 1114 0c0 4.9-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            <div><div class="k">Address · 公司地址</div><div class="v">江苏省南京市江北新区</div></div>
+          </div>
+          <div class="ci-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9S14.5 18.4 12 21c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg>
+            <div><div class="k">Website · 官方网站</div><div class="v"><a href="https://www.kerrus.com" target="_blank" rel="noopener">www.kerrus.com</a></div></div>
+          </div>
+          <div class="ci-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v14H4z"/><path d="M4 7l8 6 8-6"/></svg>
+            <div><div class="k">Email · 商务邮箱</div><div class="v"><a href="mailto:jasonshen@kerrus.com">jasonshen@kerrus.com</a></div></div>
+          </div>
+          <div class="ci-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg>
+            <div><div class="k">Tel · 联系电话</div><div class="v"><a href="tel:+8615601655630">+86 15601655630</a></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-card reveal d2 blueprint">
+        <div>
+          <div class="q">一个测试台项目，<br>从<em>机械、电气到软件</em>只对接一个团队。</div>
+          <p>科瑞斯承接非标自动化装配线与汽车电子测试台的设计、制造、调试与陪产全流程，并为未来的 MES 与物联网升级预留接口。</p>
+        </div>
+        <div class="mono">SCOPE: DESIGN → BUILD → COMMISSION → RAMP-UP SUPPORT</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 页脚 ===== -->
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <div class="footer-brand">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <g fill="none" stroke="url(#lg)" stroke-width="3.4" stroke-linecap="round">
+            <ellipse cx="24" cy="11" rx="17" ry="6.5"/><ellipse cx="24" cy="17" rx="17" ry="6.5"/>
+            <ellipse cx="24" cy="23" rx="17" ry="6.5"/><ellipse cx="24" cy="29" rx="17" ry="6.5"/>
+            <ellipse cx="24" cy="35" rx="17" ry="6.5"/>
+          </g>
+        </svg>
+        <b>KERRUS</b>
+      </div>
+      <div>南京科瑞斯软件科技有限公司 · 南京市江北新区</div>
+    </div>
+    <nav class="footer-links" aria-label="页脚导航">
+      <a href="#about">关于我们</a><a href="#biz">主营业务</a><a href="#capability">核心能力</a><a href="#testing">测试经验</a>
+      <a href="#cases">项目案例</a><a href="#customers">客户</a><a href="#contact">联系</a>
+    </nav>
+  </div>
+  <div class="wrap">
+    <div class="tick-rule" style="width:100%"></div>
+    <div class="footer-copy">
+      <span>© 2019–2026 NANJING KERRUS SOFTWARE TECHNOLOGY CO., LTD.</span>
+      <span>engineering. tomorrow. together.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  /* ---------- 导航：滚动底色 + 移动端菜单 ---------- */
+  var nav=document.getElementById('nav');
+  var navLinks=document.getElementById('navLinks');
+  var navToggle=document.getElementById('navToggle');
+  function onScroll(){nav.classList.toggle('scrolled',window.scrollY>40);}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  navToggle.addEventListener('click',function(){
+    var open=navLinks.classList.toggle('open');
+    navToggle.classList.toggle('open',open);
+    navToggle.setAttribute('aria-expanded',open?'true':'false');
+  });
+  navLinks.addEventListener('click',function(e){
+    if(e.target.tagName==='A'){navLinks.classList.remove('open');navToggle.classList.remove('open');navToggle.setAttribute('aria-expanded','false');}
+  });
+
+  /* ---------- 当前章节高亮 ---------- */
+  var secs=[].slice.call(document.querySelectorAll('section[id]'));
+  var linkMap={};
+  [].forEach.call(document.querySelectorAll('.nav-links a[href^="#"]'),function(a){
+    linkMap[a.getAttribute('href').slice(1)]=a;
+  });
+  var spy=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        Object.keys(linkMap).forEach(function(k){linkMap[k].classList.remove('active');});
+        var a=linkMap[en.target.id];
+        if(a){a.classList.add('active');}
+      }
+    });
+  },{rootMargin:'-45% 0px -50% 0px'});
+  secs.forEach(function(s){spy.observe(s);});
+
+  /* ---------- 滚动揭示（含兜底：保证任何情况下内容都不会永久隐藏） ---------- */
+  var reveal=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');reveal.unobserve(en.target);}});
+  },{threshold:.08,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){reveal.observe(el);});
+  window.addEventListener('load',function(){
+    setTimeout(function(){
+      document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});
+    },1500);
+  });
+
+  /* ---------- Hero 数字计数 ---------- */
+  var statsDone=false;
+  function runCounters(){
+    if(statsDone)return;statsDone=true;
+    document.querySelectorAll('[data-count]').forEach(function(el){
+      var target=parseInt(el.getAttribute('data-count'),10);
+      var suffixHTML=el.innerHTML.replace(/^0/,'');
+      var dur=1300,t0=null;
+      function step(ts){
+        if(!t0)t0=ts;
+        var p=Math.min((ts-t0)/dur,1);
+        var ease=1-Math.pow(1-p,3);
+        el.innerHTML=Math.round(target*ease)+suffixHTML;
+        if(p<1)requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  var heroObs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)runCounters();});},{threshold:.3});
+  heroObs.observe(document.querySelector('.hero-stats'));
+
+  /* ---------- 案例切换 ---------- */
+  var tabs=document.querySelectorAll('.case-tab');
+  var panels=document.querySelectorAll('.case-panel');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click',function(){
+      tabs.forEach(function(t){t.classList.remove('active');t.setAttribute('aria-selected','false');});
+      panels.forEach(function(p){p.classList.remove('active');});
+      tab.classList.add('active');tab.setAttribute('aria-selected','true');
+      var pan=document.getElementById(tab.getAttribute('data-case'));
+      if(pan){pan.classList.add('active');}
+    });
+  });
+})();
+
+/* ============================================================
+   中英文切换（i18n）
+============================================================ */
+(function(){
+  "use strict";
+  var I18N = {
+    /* ---------- 导航 ---------- */
+    '#navLinks a:nth-of-type(1)':['关于科瑞斯','About'],
+    '#navLinks a:nth-of-type(2)':['主营业务','Services'],
+    '#navLinks a:nth-of-type(3)':['核心能力','Capabilities'],
+    '#navLinks a:nth-of-type(4)':['测试经验','Testing'],
+    '#navLinks a:nth-of-type(5)':['项目案例','Projects'],
+    '#navLinks a:nth-of-type(6)':['合作客户','Customers'],
+    '#navLinks a:nth-of-type(7)':['方案咨询','Contact Us'],
+    /* ---------- Hero ---------- */
+    '.hero h1':['汽车电子测试与<br>工业自动化<em>整线解决方案</em>','Automotive Electronics Testing &amp;<br>Industrial Automation <em>Turnkey Solutions</em>'],
+    '.hero-sub':['南京科瑞斯软件科技有限公司，专注工业自动化技术及汽车电子领域的装配与测试解决方案，团队来自非标自动化行业，具备丰富的自动化装配线设计与测试台开发经验。','Nanjing KERRUS Software Technology Co., Ltd. focuses on assembly and testing solutions in industrial automation and automotive electronics. Our team comes from the non-standard automation industry, with rich experience in automated assembly line design and test bench development.'],
+    '.hero-actions .btn-primary':['查看项目案例<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>','View Projects<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'],
+    '.hero-actions .btn-ghost':['了解服务能力','Explore Capabilities'],
+    '.hero-stat:nth-of-type(1) span':['成立于南京江北新区','Founded in Nanjing Jiangbei New Area'],
+    '.hero-stat:nth-of-type(2) span':['主营业务板块','Business Divisions'],
+    '.hero-stat:nth-of-type(3) span':['测试信号采样率','Test Signal Sample Rate'],
+    '.hero-stat:nth-of-type(4) span':['已交付典型项目','Delivered Projects'],
+    /* ---------- 关于 ---------- */
+    '#about .eyebrow':['Company Instruction','Company Profile'],
+    '#about .sec-title':['关于科瑞斯','About KERRUS'],
+    '#about .about-text p:nth-of-type(1)':['<strong>南京科瑞斯软件科技有限公司</strong>成立于 2019 年，位于南京市江北新区，是一家专注于提供工业自动化技术及汽车电子领域装配及测试解决方案的供应商，能够为客户提供优质的服务和技术支持，快速响应客户的需求。','<strong>Nanjing KERRUS Software Technology Co., Ltd.</strong> was founded in 2019 in Nanjing Jiangbei New Area. We are a solution provider of assembly and testing for industrial automation and automotive electronics, delivering quality services and technical support with fast response to customer needs.'],
+    '#about .about-text p:nth-of-type(2)':['公司成员均来自非标自动化行业，拥有丰富的<strong>自动化装配线设计</strong>与<strong>测试台开发</strong>经验，业务覆盖电气自动化、机械设计与制造、上位机软件设计、汽车电子测试服务、工业机器人系统集成与离线仿真。','Our team comes from the non-standard automation industry, with rich experience in <strong>automated assembly line design</strong> and <strong>test bench development</strong>, covering electrical automation, mechanical design &amp; manufacturing, host computer software design, automotive electronics testing, industrial robot system integration and offline simulation.'],
+    '#about .mission .lab':['Our Mission · 科瑞斯的使命','Our Mission'],
+    '#about .mission p':['通过提供最高质量的解决方案，利用最新的技术在市场上赢得客户；同时在同一时间，减少客户的资本投资。','To win customers in the market by delivering the highest quality solutions with the latest technology, while reducing our customers\' capital investment.'],
+    '#about .fact-card h3':['已开发交付的典型项目','Delivered Projects'],
+    '#about .fact-card ol li:nth-of-type(1)':['电子油泵耐久和性能测试台','Electronic Pump Durability &amp; Performance Test Bench'],
+    '#about .fact-card ol li:nth-of-type(2)':['DCT 变速箱 EOL 测试台','DCT Transmission EOL Test Bench'],
+    '#about .fact-card ol li:nth-of-type(3)':['涡轮增压器测试台','Turbocharger Test Bench'],
+    '#about .fact-card ol li:nth-of-type(4)':['车身控制器 BGM 功能测试台','BCM BGM Function Test Bench'],
+    '#about .fact-card ol li:nth-of-type(5)':['伟世通 MRA 信息娱乐控制器装配及烧录线','Visteon MRA Infotainment Controller Assembly &amp; Flashing Line'],
+    '#about .fact-card ol li:nth-of-type(6)':['半导体设备上位机控制与 SECS/GEM 通讯软件','Semiconductor Equipment Host Software with SECS/GEM Communication'],
+    '#about .future .lab':['What\'s Next · 公司方向与未来','What\'s Next'],
+    '#about .future h3':['制造执行系统 MES 即将推出','MES Manufacturing Execution System — Coming Soon'],
+    '#about .future p':['搭配物联网以及传感器，为工厂的生产制造自动化水平提供新的技术支持。','Combined with IoT and sensors, bringing new technical support to elevate factory production automation.'],
+    /* ---------- 主营业务 ---------- */
+    '#biz .eyebrow':['Business Service','Business Services'],
+    '#biz .sec-title':['主营业务及产品服务','Main Business &amp; Services'],
+    '#biz .sec-lead':['从机械、电气到软件与仿真，六大板块构成完整的非标自动化交付能力。','From mechanics and electrics to software and simulation, six divisions form a complete non-standard automation delivery capability.'],
+    '.biz-grid .biz-card:nth-of-type(1) h3':['电气自动化','Electrical Automation'],
+    '.biz-grid .biz-card:nth-of-type(2) h3':['机械设计与制造','Mechanical Design &amp; Manufacturing'],
+    '.biz-grid .biz-card:nth-of-type(3) h3':['上位机软件设计','Host Computer Software Design'],
+    '.biz-grid .biz-card:nth-of-type(4) h3':['汽车电子测试服务','Automotive Electronics Testing Service'],
+    '.biz-grid .biz-card:nth-of-type(5) h3':['工业机器人系统集成','Industrial Robot System Integration'],
+    '.biz-grid .biz-card:nth-of-type(6) h3':['离线仿真','Offline Simulation'],
+    '.biz-grid .biz-card:nth-of-type(1) p':['PLC 程序调试、玻璃涂胶、机器人搬运、车底涂胶与整车喷涂，覆盖电气设计、安装、调试与上位机调试全流程。','PLC programming and commissioning, glass gluing, robot handling, underbody gluing and whole-vehicle spraying, covering the full flow of electrical design, installation, commissioning and HMI commissioning.'],
+    '.biz-grid .biz-card:nth-of-type(2) p':['装配线体、夹具工装、测试设备与下线测试产线设计，含输送机构、有限元受力分析与 3D 模拟动画。','Design of assembly lines, fixtures and tooling, test equipment and EOL test lines, including conveyor systems, FEA load analysis and 3D simulation animation.'],
+    '.biz-grid .biz-card:nth-of-type(3) p':['测试软件设计与集成、生产及追溯系统（Product &amp; MES）、2D/3D 视觉定位系统集成、用户管理与数据报表。','Test software design and integration, production &amp; traceability system (Product &amp; MES), 2D/3D vision positioning integration, user management and data reporting.'],
+    '.biz-grid .biz-card:nth-of-type(4) p':['变速箱 EOL、车身控制器、电子泵、涡轮增压器等汽车部件的功能、性能与耐久测试台开发。','Development of function, performance and durability test benches for automotive parts: transmission EOL, body control modules, electronic pumps, turbochargers and more.'],
+    '.biz-grid .biz-card:nth-of-type(5) p':['机器人搬运、涂胶、喷涂与视觉引导工作站集成，OPC 配置、服务器配置与 PLC 接口联调。','Robot handling, gluing, spraying and vision-guided work cell integration, with OPC, server and PLC interface commissioning.'],
+    '.biz-grid .biz-card:nth-of-type(6) p':['机器人产线与测试节拍的离线仿真验证、时序分析与 3D 模拟动画，在投产前锁定方案风险。','Offline simulation of robot lines and test takt, sequence analysis and 3D simulation animation to lock down risks before production.'],
+    /* ---------- 核心能力 ---------- */
+    '#capability .sec-title':['从设计到陪产的完整交付链路','Complete Delivery Chain: Design to Ramp-up'],
+    '#capability .sec-lead':['三大工程能力协同推进，每个环节都有明确的交付物与验收动作。','Three engineering capabilities work in parallel; every step has clear deliverables and acceptance actions.'],
+    '.cap-cols .cap-col:nth-of-type(1) h3':['电气自动化','Electrical Automation'],
+    '.cap-cols .cap-col:nth-of-type(2) h3':['机械设计与制造','Mechanical Design &amp; Manufacturing'],
+    '.cap-cols .cap-col:nth-of-type(3) h3':['软件设计','Software Design'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(2) h4':['电气设计 Electric Design','Electric Design'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(2) li:nth-of-type(1)':['控制柜及元器件选型<small>Material list</small>','Control cabinet &amp; component selection<small>Material list</small>'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(2) li:nth-of-type(2)':['通讯设备选配<small>Communication devices selection</small>','Communication devices selection<small>Communication devices</small>'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(2) li:nth-of-type(3)':['I/O 点分配 · 图纸绘制<small>Electric Drawing</small>','I/O point assignment · drawing<small>Electric Drawing</small>'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(2) li:nth-of-type(4)':['程序和 HMI 设计<small>Programming &amp; HMI design</small>','Programming &amp; HMI design<small>Programming &amp; HMI</small>'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(3) h4':['电气安装 Electrical Installation','Electrical Installation'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(3) li:nth-of-type(1)':['控制柜摆放及桥架铺设 · 母线排接入','Control cabinet placement, cable tray routing &amp; busbar connection'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(3) li:nth-of-type(2)':['设备动力电缆接入 · 接电检测','Power cable connection &amp; energization check'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(3) li:nth-of-type(3)':['设备及线缆标签制作','Equipment &amp; cable labeling'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(4) h4':['电气调试 Electrical Commissioning','Electrical Commissioning'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(4) li:nth-of-type(1)':['网络组态，I/O 与安全信号检验','Network configuration, I/O &amp; safety signal check'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(4) li:nth-of-type(2)':['互锁信号校验，与机器人及视觉系统测试时序','Interlock signal verification, test sequencing with robot &amp; vision system'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(4) li:nth-of-type(3)':['模拟功能及联动测试，陪产跟踪与电气培训','Simulation function &amp; interlock test, ramp-up support and electrical training'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(5) h4':['上位机调试 HMI Commissioning','HMI Commissioning'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(5) li:nth-of-type(1)':['电脑硬件 / 系统选配与开发环境配置','PC hardware / OS selection &amp; development environment setup'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(5) li:nth-of-type(2)':['机器人 OPC、服务器、PLC 接口配置','Robot OPC, server &amp; PLC interface configuration'],
+    '.cap-cols .cap-col:nth-of-type(1) .cap-block:nth-of-type(5) li:nth-of-type(3)':['与 PLC 对点、功能与联动调试，陪产及培训','Signal mapping with PLC, function &amp; interlock commissioning, ramp-up support and training'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(2) h4':['线体与设备设计','Line &amp; Equipment Design'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(2) li:nth-of-type(1)':['装配线体设计<small>Assembly Line Design</small>','Assembly line design<small>Assembly Line</small>'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(2) li:nth-of-type(2)':['夹具及工装设计<small>Tooling Design</small>','Fixture &amp; tooling design<small>Tooling</small>'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(2) li:nth-of-type(3)':['测试设备设计<small>Test Equipment</small>','Test equipment design<small>Test Equipment</small>'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(2) li:nth-of-type(4)':['下线测试产线<small>EOL Design</small>','EOL test line<small>EOL Design</small>'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(3) h4':['专项设计能力','Specialized Design'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(3) li:nth-of-type(1)':['输漆管路设计<small>Paint supply system</small>','Paint supply line design<small>Paint supply</small>'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(3) li:nth-of-type(2)':['输送机构 Stop &amp; Go / Tracking<small>Conveyor</small>','Conveyor Stop &amp; Go / Tracking<small>Conveyor</small>'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(3) li:nth-of-type(3)':['车身 / 焊装工装夹具设计<small>Fixtures design</small>','Body / welding fixtures design<small>Fixtures</small>'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(3) li:nth-of-type(4)':['有限元载荷受力分析','FEA load analysis'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(3) li:nth-of-type(5)':['3D 模拟动画 · 产品研发','3D simulation animation · R&amp;D'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(4) h4':['设计验证','Design Verification'],
+    '.cap-cols .cap-col:nth-of-type(2) .cap-block:nth-of-type(4) li:nth-of-type(1)':['机器人立柱应力分析：满载 700kg 向下重力工况校验，立柱弯曲变形处于安全等级范围内','Robot column stress analysis: verified under 700kg full-load downward gravity; column deflection stays within the safe range'],
+    '.cap-cols .cap-col:nth-of-type(3) .cap-block:nth-of-type(2) h4':['测试软件集成','Test Software Integration'],
+    '.cap-cols .cap-col:nth-of-type(3) .cap-block:nth-of-type(2) li:nth-of-type(1)':['软件设计及测试集成<small>Software Design and Test</small>','Software design &amp; test integration<small>Design &amp; Test</small>'],
+    '.cap-cols .cap-col:nth-of-type(3) .cap-block:nth-of-type(2) li:nth-of-type(2)':['测试流程编辑、参数配置与传感器校准','Test flow editing, parameter configuration &amp; sensor calibration'],
+    '.cap-cols .cap-col:nth-of-type(3) .cap-block:nth-of-type(2) li:nth-of-type(3)':['实验数据生产、查看与信息列表显示','Test data generation, review &amp; info list display'],
+    '.cap-cols .cap-col:nth-of-type(3) .cap-block:nth-of-type(3) h4':['生产与追溯','Production &amp; Traceability'],
+    '.cap-cols .cap-col:nth-of-type(3) .cap-block:nth-of-type(3) li:nth-of-type(1)':['生产及追溯系统<small>Product &amp; MES</small>','Production &amp; traceability system<small>Product &amp; MES</small>'],
+    '.cap-cols .cap-col:nth-of-type(3) .cap-block:nth-of-type(3) li:nth-of-type(2)':['用户管理<small>User management</small>','User management<small>Users</small>'],
+    '.cap-cols .cap-col:nth-of-type(3) .cap-block:nth-of-type(3) li:nth-of-type(3)':['数据显示及报表生成<small>Data Analysis Report</small>','Data display &amp; report generation<small>Reports</small>'],
+    '.cap-cols .cap-col:nth-of-type(3) .cap-block:nth-of-type(4) h4':['机器视觉','Machine Vision'],
+    '.cap-cols .cap-col:nth-of-type(3) .cap-block:nth-of-type(4) li:nth-of-type(1)':['视觉 2D、3D 定位系统集成<small>Vision 2D, 3D</small>','2D/3D vision positioning integration<small>Vision 2D, 3D</small>'],
+    '.cap-cols .cap-col:nth-of-type(3) .cap-block:nth-of-type(4) li:nth-of-type(2)':['视觉与机器人测试时序联动','Vision-robot test sequencing interlock'],
+    /* ---------- 测试经验 ---------- */
+    '#testing .sec-title':['汽车电子测试经验','Automotive Electronics Testing Experience'],
+    '#testing .sec-lead':['覆盖变速箱、车身控制器、电子泵与涡轮增压器等核心部件的测试台开发，贯穿 EOL 下线、功能、性能与耐久验证全流程。','Test bench development for core components: transmissions, body control modules, electronic pumps and turbochargers, covering the full flow of EOL, function, performance and durability verification.'],
+    '.te-grid .te-card:nth-of-type(1) h3':['DCT 变速箱 EOL 测试台','DCT Transmission EOL Test Bench'],
+    '.te-grid .te-card:nth-of-type(2) h3':['车身控制器 BGM 功能测试','BCM BGM Function Test'],
+    '.te-grid .te-card:nth-of-type(3) h3':['涡轮增压器测试系统','Turbocharger Test System'],
+    '.te-grid .te-card:nth-of-type(4) h3':['电子油泵耐久与性能测试','Electronic Pump Durability &amp; Performance Test'],
+    '.te-grid .te-card:nth-of-type(5) h3':['信息娱乐控制器装配烧录线','Infotainment Controller Assembly &amp; Flashing Line'],
+    '.te-grid .te-card:nth-of-type(6) h3':['汽车电子测试服务','Automotive Electronics Testing Service'],
+    '.te-grid .te-card:nth-of-type(1) p':['变速箱下线测试台，采集油路、NVH、输入/输出驱动与 Park Lock 信号，TCU 数据经 CAN Cyclic 周期读取，锁止力与位置分别由 Load Cell、Encoder 测量。','Transmission EOL bench acquiring oil circuit, NVH, input/output drive and Park Lock signals; TCU data read via CAN Cyclic; locking force and position measured by Load Cell and Encoder.'],
+    '.te-grid .te-card:nth-of-type(2) p':['车身控制器作为乘用车主节点，测试台同步仿真 CAN、LIN、FlexRay 总线，并支持车载以太网 DoIP 诊断与 Flash 刷写，兼顾功能安全特性验证。','As the main node of a passenger vehicle, the bench simulates CAN, LIN and FlexRay buses, supports Automotive Ethernet DoIP diagnostics and Flash programming, with functional safety verification.'],
+    '.te-grid .te-card:nth-of-type(3) p':['密闭实验室配合燃烧器，对油温、油压、水温与流量多工况闭环控制，通过热老化与热冲击验证可靠性，并用 Map Editor 标定压气机特性曲线。','Sealed lab with combustor, closed-loop control of oil temperature/pressure, water temperature and flow under multiple conditions; reliability verified via thermal aging and thermal shock; compressor map calibrated with Map Editor.'],
+    '.te-grid .te-card:nth-of-type(4) p':['基于 LabVIEW 的电子泵耐久与性能软件，支持多泵并行试验、泵通讯信号实时显示、试验量统计与传感器校准，配套数据生产与报表能力。','LabVIEW-based electronic pump durability and performance software supporting parallel multi-pump tests, real-time pump signal display, test statistics and sensor calibration, with data production and reporting.'],
+    '.te-grid .te-card:nth-of-type(5) p':['面向信息娱乐控制器的整线装配与程序烧录，整合机械工装、电气控制与上位机追溯软件，实现上料、装配、烧录、测试到下线的有序流转。','Whole-line assembly and firmware flashing for infotainment controllers, integrating mechanical tooling, electrical control and host traceability software for orderly flow from loading, assembly, flashing and testing to EOL.'],
+    '.te-grid .te-card:nth-of-type(6) p':['承接汽车电子测试台的一站式开发：机械、电气、软件设计与陪产交付，覆盖 EOL 下线、功能、性能、耐久等测试台型，快速响应客户需求。','One-stop test bench development for automotive electronics: mechanical, electrical and software design with ramp-up support, covering EOL, function, performance and durability benches with fast response.'],
+    '.te-grid .te-card:nth-of-type(1) .te-tags span:nth-of-type(1)':['100Hz 采样','100Hz Sampling'],
+    '.te-grid .te-card:nth-of-type(1) .te-tags span:nth-of-type(2)':['CAN Cyclic','CAN Cyclic'],
+    '.te-grid .te-card:nth-of-type(1) .te-tags span:nth-of-type(3)':['NVH','NVH'],
+    '.te-grid .te-card:nth-of-type(1) .te-tags span:nth-of-type(4)':['Load Cell','Load Cell'],
+    '.te-grid .te-card:nth-of-type(1) .te-tags span:nth-of-type(5)':['Encoder','Encoder'],
+    '.te-grid .te-card:nth-of-type(2) .te-tags span:nth-of-type(1)':['CAN','CAN'],
+    '.te-grid .te-card:nth-of-type(2) .te-tags span:nth-of-type(2)':['LIN','LIN'],
+    '.te-grid .te-card:nth-of-type(2) .te-tags span:nth-of-type(3)':['FlexRay','FlexRay'],
+    '.te-grid .te-card:nth-of-type(2) .te-tags span:nth-of-type(4)':['DoIP','DoIP'],
+    '.te-grid .te-card:nth-of-type(2) .te-tags span:nth-of-type(5)':['Flash','Flash'],
+    '.te-grid .te-card:nth-of-type(3) .te-tags span:nth-of-type(1)':['热老化','Thermal Aging'],
+    '.te-grid .te-card:nth-of-type(3) .te-tags span:nth-of-type(2)':['热冲击','Thermal Shock'],
+    '.te-grid .te-card:nth-of-type(3) .te-tags span:nth-of-type(3)':['闭环控制','Closed-loop Control'],
+    '.te-grid .te-card:nth-of-type(3) .te-tags span:nth-of-type(4)':['Map 标定','Map Calibration'],
+    '.te-grid .te-card:nth-of-type(4) .te-tags span:nth-of-type(1)':['LabVIEW','LabVIEW'],
+    '.te-grid .te-card:nth-of-type(4) .te-tags span:nth-of-type(2)':['耐久试验','Durability Test'],
+    '.te-grid .te-card:nth-of-type(4) .te-tags span:nth-of-type(3)':['多泵并行','Multi-pump Parallel'],
+    '.te-grid .te-card:nth-of-type(4) .te-tags span:nth-of-type(4)':['传感器校准','Sensor Calibration'],
+    '.te-grid .te-card:nth-of-type(5) .te-tags span:nth-of-type(1)':['程序烧录','Flashing'],
+    '.te-grid .te-card:nth-of-type(5) .te-tags span:nth-of-type(2)':['整线集成','Line Integration'],
+    '.te-grid .te-card:nth-of-type(5) .te-tags span:nth-of-type(3)':['追溯','Traceability'],
+    '.te-grid .te-card:nth-of-type(5) .te-tags span:nth-of-type(4)':['MES','MES'],
+    '.te-grid .te-card:nth-of-type(6) .te-tags span:nth-of-type(1)':['EOL','EOL'],
+    '.te-grid .te-card:nth-of-type(6) .te-tags span:nth-of-type(2)':['功能测试','Function Test'],
+    '.te-grid .te-card:nth-of-type(6) .te-tags span:nth-of-type(3)':['性能测试','Performance Test'],
+    '.te-grid .te-card:nth-of-type(6) .te-tags span:nth-of-type(4)':['耐久测试','Durability Test'],
+    '.te-grid .te-card:nth-of-type(6) .te-tags span:nth-of-type(5)':['陪产','Ramp-up Support'],
+    '.te-summary .te-sum-col:nth-of-type(1) h4':['Test Types · 测试类型','Test Types'],
+    '.te-summary .te-sum-col:nth-of-type(1) .badges span:nth-of-type(1)':['<b>01</b>EOL 下线测试','<b>01</b>EOL Test'],
+    '.te-summary .te-sum-col:nth-of-type(1) .badges span:nth-of-type(2)':['<b>02</b>功能测试','<b>02</b>Function Test'],
+    '.te-summary .te-sum-col:nth-of-type(1) .badges span:nth-of-type(3)':['<b>03</b>性能测试','<b>03</b>Performance Test'],
+    '.te-summary .te-sum-col:nth-of-type(1) .badges span:nth-of-type(4)':['<b>04</b>耐久测试','<b>04</b>Durability Test'],
+    '.te-summary .te-sum-col:nth-of-type(1) .badges span:nth-of-type(5)':['<b>05</b>可靠性验证（热老化 / 热冲击）','<b>05</b>Reliability (Thermal Aging / Shock)'],
+    '.te-summary .te-sum-col:nth-of-type(1) .badges span:nth-of-type(6)':['<b>06</b>程序烧录与诊断','<b>06</b>Flashing &amp; Diagnostics'],
+    '.te-summary .te-sum-col:nth-of-type(2) h4':['Bus &amp; Acquisition · 总线与采集技术','Bus &amp; Acquisition'],
+    '.te-summary .te-sum-col:nth-of-type(2) .badges span:nth-of-type(1)':['<b>A</b>CAN','<b>A</b>CAN'],
+    '.te-summary .te-sum-col:nth-of-type(2) .badges span:nth-of-type(2)':['<b>B</b>LIN','<b>B</b>LIN'],
+    '.te-summary .te-sum-col:nth-of-type(2) .badges span:nth-of-type(3)':['<b>C</b>FlexRay','<b>C</b>FlexRay'],
+    '.te-summary .te-sum-col:nth-of-type(2) .badges span:nth-of-type(4)':['<b>D</b>车载以太网 DoIP','<b>D</b>Automotive Ethernet DoIP'],
+    '.te-summary .te-sum-col:nth-of-type(2) .badges span:nth-of-type(5)':['<b>E</b>100Hz 采样','<b>E</b>100Hz Sampling'],
+    '.te-summary .te-sum-col:nth-of-type(2) .badges span:nth-of-type(6)':['<b>F</b>LabVIEW','<b>F</b>LabVIEW'],
+    '.te-summary .te-sum-col:nth-of-type(2) .badges span:nth-of-type(7)':['<b>G</b>数据追溯报表','<b>G</b>Data Traceability Reports'],
+    /* ---------- 案例 ---------- */
+    '#cases .sec-title':['典型项目案例','Delivered Project Cases'],
+    '#cases .sec-lead':['点击左侧项目，查看测试对象、系统构成与关键技术点。','Click a project on the left to view the test object, system architecture and key technologies.'],
+    '.case-tab:nth-of-type(1) .t-name':['DCT 变速箱 EOL 测试台','DCT Transmission EOL Test Bench'],
+    '.case-tab:nth-of-type(2) .t-name':['车身控制器 BGM 功能测试','BCM BGM Function Test'],
+    '.case-tab:nth-of-type(3) .t-name':['涡轮增压器测试系统','Turbocharger Test System'],
+    '.case-tab:nth-of-type(4) .t-name':['电子泵性能与耐久测试软件','Electronic Pump Performance &amp; Durability Software'],
+    '.case-tab:nth-of-type(5) .t-name':['MRA 信息娱乐控制器装配烧录线','MRA Infotainment Controller Assembly &amp; Flashing Line'],
+    '.case-tab:nth-of-type(6) .t-name':['半导体设备上位机与 SECS/GEM 通讯软件','Semiconductor Host Software &amp; SECS/GEM Communication'],
+    '#c1 h3':['DCT 变速箱 EOL 测试台','DCT Transmission EOL Test Bench'],
+    '#c1 .c-desc':['针对双离合器变速箱下线测试，台架采集 Oil In / Oil Out 油路、NVH Sensor、Input Drive 与 Output Drive 1/2、Park Lock 等部位信号；模拟量 / 数字量经 Drive Control 以 100Hz 采样，TCU 相关信号通过 CAN Cyclic 周期读取。','For DCT end-of-line testing, the bench acquires Oil In/Out, NVH Sensor, Input Drive and Output Drive 1/2, Park Lock and other signals; analog/digital signals are sampled at 100Hz via Drive Control, and TCU-related signals are read cyclically over CAN.'],
+    '#c1 .case-points li:nth-of-type(1)':['<b>100Hz 采样：</b>Input/Output 模拟数字信号、扭矩信号','<b>100Hz Sampling:</b> Input/Output analog &amp; digital signals, torque signal'],
+    '#c1 .case-points li:nth-of-type(2)':['<b>Load Cell：</b>Parking Lock Force 锁止力测量','<b>Load Cell:</b> Parking Lock Force measurement'],
+    '#c1 .case-points li:nth-of-type(3)':['<b>Encoder：</b>Parking Lock Position 锁止位置计数','<b>Encoder:</b> Parking Lock Position counting'],
+    '#c1 .case-points li:nth-of-type(4)':['<b>CAN Cyclic：</b>转速、主油路 / 离合器压力与电流位置','<b>CAN Cyclic:</b> speed, main oil circuit / clutch pressure and current position'],
+    '#c1 .case-points li:nth-of-type(5)':['<b>换挡测试：</b>Shift Rod 电流与位置 1-4 挡、多电流值 GU1+GU2','<b>Shift Test:</b> Shift Rod current and position gears 1-4, multi-current values GU1+GU2'],
+    '#c1 .case-points li:nth-of-type(6)':['<b>状态监测：</b>当前 / 目标挡位、变速箱状态、油液与离合器温度','<b>Status:</b> current/target gear, transmission status, oil and clutch temperature'],
+    '#c2 h3':['车身控制器 BGM 功能测试台','BCM BGM Function Test Bench'],
+    '#c2 .c-desc':['测试对象为车身控制器 BGM。作为乘用车上的主节点，其功能复杂、实时性要求高，还需要具备功能安全特性。测试台需要仿真 CAN、LIN、FlexRay 总线，以及基于车载以太网的 DoIP 诊断与 Flash 刷写功能。','The device under test is the body control module BGM. As the main node of a passenger vehicle, it features complex functions, high real-time requirements and functional safety properties. The bench simulates CAN, LIN and FlexRay buses, plus Automotive Ethernet DoIP diagnostics and Flash programming.'],
+    '#c2 .case-points li:nth-of-type(1)':['<b>多总线仿真：</b>CAN、LIN、FlexRay 残余总线同步仿真','<b>Multi-bus:</b> synchronized residual bus simulation of CAN, LIN and FlexRay'],
+    '#c2 .case-points li:nth-of-type(2)':['<b>车载以太网：</b>DoIP 诊断通讯','<b>Automotive Ethernet:</b> DoIP diagnostic communication'],
+    '#c2 .case-points li:nth-of-type(3)':['<b>Flash 刷写：</b>控制器程序烧录与校验','<b>Flash:</b> ECU firmware programming &amp; verification'],
+    '#c2 .case-points li:nth-of-type(4)':['<b>功能安全：</b>测试步骤、期望值与测量值自动判定','<b>Functional Safety:</b> automatic judgment of steps, expected and measured values'],
+    '#c2 .case-points li:nth-of-type(5)':['<b>工装设计：</b>测试台正视结构、探针与指示灯布局','<b>Tooling:</b> bench front structure, probe and indicator layout'],
+    '#c2 .case-points li:nth-of-type(6)':['<b>流程编排：</b>上电、释放、写配置、诊断与恢复全流程','<b>Flow:</b> full sequence of power-on, release, configuration write, diagnostics and recovery'],
+    '#c3 h3':['涡轮增压器测试系统','Turbocharger Test System'],
+    '#c3 .c-desc':['测试对象为涡轮增压器：将其放置于密闭实验室内并连接到燃烧器，台架对油温、油压、水温以及流量在不同工况下进行控制，通过热老化和热冲击来验证涡轮增压器的可靠性和性能参数。','The turbocharger is placed in a sealed lab and connected to a combustor. The bench controls oil temperature/pressure, water temperature and flow under different conditions, verifying reliability and performance via thermal aging and thermal shock.'],
+    '#c3 .case-points li:nth-of-type(1)':['<b>燃烧系统：</b>400kW 燃烧室、天然气与空气冷却干燥单元','<b>Combustion:</b> 400kW combustor, natural gas and air cooling/drying units'],
+    '#c3 .case-points li:nth-of-type(2)':['<b>热管理：</b>油温 / 油压 / 水温 / 流量多工况闭环控制','<b>Thermal:</b> closed-loop control of oil temp/pressure, water temp and flow'],
+    '#c3 .case-points li:nth-of-type(3)':['<b>可靠性验证：</b>热老化（Thermal Aging）与热冲击（Thermal Shock）','<b>Reliability:</b> thermal aging and thermal shock'],
+    '#c3 .case-points li:nth-of-type(4)':['<b>特性标定：</b>Map Mapping Editor 压气机特性曲线绘制','<b>Calibration:</b> compressor map drawing with Map Editor'],
+    '#c3 .case-points li:nth-of-type(5)':['<b>加速度测量：</b>Acceleration measurement 振动监测','<b>Acceleration:</b> vibration monitoring'],
+    '#c3 .case-points li:nth-of-type(6)':['<b>参数表：</b>流量、压比、效率、转速数据管理','<b>Parameters:</b> flow, pressure ratio, efficiency and speed data management'],
+    '#c4 h3':['基于 LabVIEW 的电子泵性能和耐久软件','LabVIEW-Based Electronic Pump Performance &amp; Durability Software'],
+    '#c4 .c-desc':['面向电子油泵耐久与性能测试开发的上位机软件，覆盖参数配置、流程编辑、数据记录与用户权限管理，支撑多泵并行耐久试验。','Host software developed for electronic pump durability and performance testing, covering parameter configuration, flow editing, data logging and user permission management, supporting parallel multi-pump durability tests.'],
+    '#c4 .case-points li:nth-of-type(1)':['<b>主测试界面：</b>泵通讯信号及曲线实时显示','<b>Main UI:</b> real-time pump communication signals and curves'],
+    '#c4 .case-points li:nth-of-type(2)':['<b>试验量统计：</b>总实验时间、泵开启时间、循环次数','<b>Statistics:</b> total test time, pump-on time, cycle count'],
+    '#c4 .case-points li:nth-of-type(3)':['<b>环境量采集：</b>电压、电流、温度、环境大气压力与温度','<b>Acquisition:</b> voltage, current, temperature, ambient pressure and temperature'],
+    '#c4 .case-points li:nth-of-type(4)':['<b>独立控制：</b>可对所有泵进行单独控制','<b>Control:</b> independent control of every pump'],
+    '#c4 .case-points li:nth-of-type(5)':['<b>参数配置：</b>被测泵控制参数与性能判断参数','<b>Config:</b> pump control and performance judgment parameters'],
+    '#c4 .case-points li:nth-of-type(6)':['<b>配套能力：</b>实验数据生产查看、传感器校准、流程编辑、用户管理','<b>Extras:</b> test data review, sensor calibration, flow editing, user management'],
+    '#c5 h3':['伟世通 MRA 信息娱乐控制器装配及烧录线','Visteon MRA Infotainment Controller Assembly &amp; Flashing Line'],
+    '#c5 .c-desc':['面向信息娱乐控制器的整线装配与程序烧录交付，整合机械工装、电气控制与上位机追溯软件，实现上料、装配、烧录、测试到下线的有序流转。','Whole-line assembly and firmware flashing for infotainment controllers, integrating mechanical tooling, electrical control and host traceability software for orderly flow from loading, assembly, flashing and testing to EOL.'],
+    '#c5 .case-points li:nth-of-type(1)':['<b>整线集成：</b>装配工位与烧录工位输送联动（Stop &amp; Go / Tracking）','<b>Line Integration:</b> transfer interlock between assembly and flashing stations (Stop &amp; Go / Tracking)'],
+    '#c5 .case-points li:nth-of-type(2)':['<b>程序烧录：</b>信息娱乐控制器固件烧写与结果校验','<b>Flashing:</b> firmware programming and result verification'],
+    '#c5 .case-points li:nth-of-type(3)':['<b>生产追溯：</b>Product &amp; MES 数据绑定与报表生成','<b>Traceability:</b> Product &amp; MES data binding and report generation'],
+    '#c5 .case-points li:nth-of-type(4)':['<b>用户权限：</b>工位操作与工程师分级用户管理','<b>Permissions:</b> station operator and engineer role-based user management'],
+    '#c6 h3':['半导体设备上位机控制与 SECS/GEM 通讯软件','Semiconductor Equipment Host Software with SECS/GEM Communication'],
+    '#c6 .c-desc':['面向晶圆搬运 / 检测等半导体设备，开发设备端上位机控制软件：完成运动控制、流程编排、数据采集与报表管理；并通过 SECS/GEM（SEMI E5 / E37 / E30）与工厂主机 MES 建立标准化通讯，实现配方管理、数据上报与报警管理。','For semiconductor equipment such as wafer handling/inspection, we develop device-side host control software covering motion control, flow orchestration, data acquisition and reporting, and communicate with the factory host MES via SECS/GEM (SEMI E5/E37/E30) for recipe management, data reporting and alarm management.'],
+    '#c6 .case-points li:nth-of-type(1)':['<b>设备控制：</b>运动控制卡 / PLC 联调，上下料流程状态机编排','<b>Device Control:</b> motion control card / PLC commissioning, loading/unloading state machine'],
+    '#c6 .case-points li:nth-of-type(2)':['<b>SECS/GEM：</b>E5 消息、E37 HSMS 通讯、E30 GEM 三态模型','<b>SECS/GEM:</b> E5 messages, E37 HSMS, E30 GEM state model'],
+    '#c6 .case-points li:nth-of-type(3)':['<b>数据上报：</b>S6F11 事件上报、S1F3/F4 变量读取','<b>Data Report:</b> S6F11 event report, S1F3/F4 variable read'],
+    '#c6 .case-points li:nth-of-type(4)':['<b>配方管理：</b>S7F1/F3 配方下载、校验与存储','<b>Recipe:</b> S7F1/F3 recipe download, verification and storage'],
+    '#c6 .case-points li:nth-of-type(5)':['<b>报警管理：</b>S5F1/F2 报警上报与清除确认','<b>Alarm:</b> S5F1/F2 alarm report and clear acknowledgement'],
+    '#c6 .case-points li:nth-of-type(6)':['<b>追溯对接：</b>MES 主机握手、Lot 追踪与报表生成','<b>Traceability:</b> MES host handshake, lot tracking and report generation'],
+    /* ---------- 客户 ---------- */
+    '#customers .sec-title':['服务全球汽车供应链客户','Serving Global Automotive Supply Chain Customers'],
+    '#customers .customer-note':['// 皮尔博格 · TRW · SACHS · 蒂森克虏伯 — 长期合作的汽车零部件与工业集团客户','// PIERBURG · TRW · SACHS · thyssenkrupp — long-term automotive parts and industrial group customers'],
+    /* ---------- 联系 ---------- */
+    '#contact .sec-title':['把测试需求交给科瑞斯','Bring Your Testing Needs to KERRUS'],
+    '#contact .contact-info h3':['欢迎沟通测试台与自动化产线需求，我们将快速给出工程方案。','Welcome to discuss your test bench and automated line needs; we provide engineering solutions quickly.'],
+    '#contact .ci-item:nth-of-type(1) .k':['Address · 公司地址','Address'],
+    '#contact .ci-item:nth-of-type(1) .v':['江苏省南京市江北新区','Jiangbei New Area, Nanjing, Jiangsu, China'],
+    '#contact .ci-item:nth-of-type(2) .k':['Website · 官方网站','Website'],
+    '#contact .ci-item:nth-of-type(3) .k':['Email · 商务邮箱','Email'],
+    '#contact .ci-item:nth-of-type(4) .k':['Tel · 联系电话','Tel'],
+    '#contact .contact-card .q':['一个测试台项目，<br>从<em>机械、电气到软件</em>只对接一个团队。','One test bench project,<br>from <em>mechanics, electrics to software</em> — one single team.'],
+    '#contact .contact-card p':['科瑞斯承接非标自动化装配线与汽车电子测试台的设计、制造、调试与陪产全流程，并为未来的 MES 与物联网升级预留接口。','KERRUS delivers the full flow of non-standard assembly lines and automotive test benches — design, build, commissioning and ramp-up support — with interfaces reserved for future MES and IoT upgrades.'],
+    /* ---------- 页脚 ---------- */
+    '.footer .wrap:first-child > div:first-child > div:nth-of-type(2)':['南京科瑞斯软件科技有限公司 · 南京市江北新区','Nanjing KERRUS Software Technology Co., Ltd. · Jiangbei New Area, Nanjing'],
+    '.footer-links a:nth-of-type(1)':['关于我们','About'],
+    '.footer-links a:nth-of-type(2)':['主营业务','Services'],
+    '.footer-links a:nth-of-type(3)':['核心能力','Capabilities'],
+    '.footer-links a:nth-of-type(4)':['测试经验','Testing'],
+    '.footer-links a:nth-of-type(5)':['项目案例','Projects'],
+    '.footer-links a:nth-of-type(6)':['客户','Customers'],
+    '.footer-links a:nth-of-type(7)':['联系','Contact']
+  };
+  var saved=null;
+  try{saved=localStorage.getItem('kerrus-lang');}catch(e){}
+  var cur=(saved==='en'||saved==='zh')?saved:'zh';
+  var btn=document.getElementById('langBtn');
+  function applyLang(lang){
+    cur=lang;
+    document.documentElement.lang=(lang==='zh')?'zh-CN':'en';
+    for(var sel in I18N){
+      var nodes=document.querySelectorAll(sel);
+      if(!nodes.length)continue;
+      var txt=I18N[sel][lang==='zh'?0:1];
+      for(var i=0;i<nodes.length;i++){nodes[i].innerHTML=txt;}
+    }
+    if(btn){btn.textContent=(lang==='zh')?'EN':'中文';}
+    try{localStorage.setItem('kerrus-lang',lang);}catch(e){}
+  }
+  if(btn){btn.addEventListener('click',function(){applyLang(cur==='zh'?'en':'zh');});}
+  applyLang(cur);
+})();
+</script>
+</body>
+</html>
